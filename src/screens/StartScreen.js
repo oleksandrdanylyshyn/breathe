@@ -33,8 +33,9 @@ const [tempTime, setTempTime] = useState(new Date());
       pricePerPack: parseFloat(pricePerPack),
       cigarettesPerPack: parseInt(cigarettesPerPack),
       stoppedSmokingDateTime: combineDateAndTime(tempDate, tempTime),
-
+      isActive: true,
     };
+
 
     saveUserData(userData);
     console.log("Saved userData", userData);
