@@ -1,14 +1,30 @@
 // src/screens/StartScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, SafeAreaView, StyleSheet } from 'react-native';
-import { globalStyles } from '../styles/globalStyles';
-import { saveUserData, getUserData } from '../storage/userData';    
+import { View, Text, TextInput, Button, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { saveUserData, getUserData } from '../storage/userData';
+import { combineDateAndTime } from '../utils/dateCalcs';
 
-const StartScreen = () => {
+const StartScreen = ({ navigation }) => {
   const [cigarettesSmoked, setCigarettesSmoked] = useState('');
   const [pricePerPack, setPricePerPack] = useState('');
   const [cigarettesPerPack, setCigarettesPerPack] = useState('');
-  const [stoppedSmokingDate, setStoppedSmokingDate] = useState('');
+  const [stoppedSmokingDateTime, setStoppedSmokingDateTime] = useState(new Date());
+
+const [tempDate, setTempDate] = useState(new Date());
+const [tempTime, setTempTime] = useState(new Date());
+
+  const onDateChange = (event, selectedValue) => {
+    if (event.type === 'set') {
+      setTempDate(selectedValue || tempDate);
+    }
+  };
+
+  const onTimeChange = (event, selectedValue) => {
+    if (event.type === 'set') {
+      setTempTime(selectedValue || tempTime);
+    }
+  };
 
   const handleSubmit = () => {
     const userData = {
@@ -16,16 +32,18 @@ const StartScreen = () => {
       cigarettesSmoked: parseInt(cigarettesSmoked),
       pricePerPack: parseFloat(pricePerPack),
       cigarettesPerPack: parseInt(cigarettesPerPack),
-      stoppedSmokingDate: stoppedSmokingDate || null,
+      stoppedSmokingDateTime: combineDateAndTime(tempDate, tempTime),
+
     };
 
     saveUserData(userData);
+    console.log("Saved userData", userData);
     // Optionally clear the form after submission
     setCigarettesSmoked('');
     setPricePerPack('');
     setCigarettesPerPack('');
-    setStoppedSmokingDate('');
-    console.log("User data saved:", userData);
+    setTempDate(new Date());
+    setTempTime(new Date());
   };
 
   useEffect(() => {
@@ -35,8 +53,7 @@ const StartScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView style={globalStyles.mainContainer}>
-        <View style={globalStyles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Smoking Data Form</Text>
       <TextInput
         style={styles.input}
@@ -59,19 +76,35 @@ const StartScreen = () => {
         value={cigarettesPerPack}
         onChangeText={setCigarettesPerPack}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Stopped Smoking Date (YYYY-MM-DD)"
-        value={stoppedSmokingDate}
-        onChangeText={setStoppedSmokingDate}
-      />
+      <Text>Stopped Smoking Date and Time</Text>
+      <View style={styles.dateTimePickerContainer}>
+        <DateTimePicker
+          value={tempDate}
+          mode="date"
+          display="default"
+          onChange={onDateChange}
+        />
+        <DateTimePicker
+          value={tempTime}
+          mode="time"
+          display="default"
+          onChange={onTimeChange}
+        />
+      </View>
+      <Text>Selected DateTime: {tempDate.toLocaleDateString()}</Text>
+
       <Button title="Submit" onPress={handleSubmit} />
-    </View>
+      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <Text>Go to Home</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
   title: {
     fontSize: 24,
     marginBottom: 20,
@@ -82,6 +115,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
+  },
+  dateTimePickerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 15,
   },
 });
 
