@@ -1,15 +1,15 @@
 // src/screens/StartScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, SafeAreaView, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { saveUserData, getUserData } from '../storage/userData';
 import { combineDateAndTime } from '../utils/dateCalcs';
+import { globalStyles } from '../styles/globalStyles';
 
-const StartScreen = ({ navigation }) => {
+const StartScreen = (props) => {
   const [cigarettesSmoked, setCigarettesSmoked] = useState('');
   const [pricePerPack, setPricePerPack] = useState('');
   const [cigarettesPerPack, setCigarettesPerPack] = useState('');
-  const [stoppedSmokingDateTime, setStoppedSmokingDateTime] = useState(new Date());
 
 const [tempDate, setTempDate] = useState(new Date());
 const [tempTime, setTempTime] = useState(new Date());
@@ -45,6 +45,8 @@ const [tempTime, setTempTime] = useState(new Date());
     setCigarettesPerPack('');
     setTempDate(new Date());
     setTempTime(new Date());
+
+    props.onSubmit();
   };
 
   useEffect(() => {
@@ -54,8 +56,12 @@ const [tempTime, setTempTime] = useState(new Date());
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Smoking Data Form</Text>
+    <SafeAreaView style={globalStyles.mainContainer}>
+        <View style={styles.logoContainer}>
+            <Image source={require('../assets/breathe-logo.png')} style={styles.logo} />
+        </View>
+        <View style={styles.container}>
+      <Text style={styles.title}>Let's get started!</Text>
       <TextInput
         style={styles.input}
         placeholder="Cigarettes Smoked"
@@ -77,7 +83,7 @@ const [tempTime, setTempTime] = useState(new Date());
         value={cigarettesPerPack}
         onChangeText={setCigarettesPerPack}
       />
-      <Text>Stopped Smoking Date and Time</Text>
+      <Text style={styles.dateTimePickerTitle}>When did you stop smoking?</Text>
       <View style={styles.dateTimePickerContainer}>
         <DateTimePicker
           value={tempDate}
@@ -92,34 +98,70 @@ const [tempTime, setTempTime] = useState(new Date());
           onChange={onTimeChange}
         />
       </View>
-      <Text>Selected DateTime: {tempDate.toLocaleDateString()}</Text>
 
-      <Button title="Submit" onPress={handleSubmit} />
-      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-        <Text>Go to Home</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Start now!</Text>
+        </TouchableOpacity>
+      </View>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    marginTop: '-10%',
+    padding: "2%",
+
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '-10%',
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    width: '70%',
+    padding: 10,
+    alignSelf: 'center',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  logo: {
+    width: 300,
+    height: 300,
   },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 15,
-    paddingLeft: 10,
+    paddingLeft: 15,
+    borderRadius: 20,
+    width: '70%',
+    alignSelf: 'center',
   },
   dateTimePickerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginBottom: 15,
+  },
+  dateTimePickerTitle: {
+    textAlign: 'center',
+    fontWeight: 'bold',
     marginBottom: 15,
   },
 });

@@ -1,7 +1,8 @@
-export const calculateSecondsSince = (date, time) => {
+export const calculateSecondsSince = (datetime) => {
     const today = new Date();
-    const stoppedSmokingDateTime = combineDateAndTime(date, time);
-    const timeDifference = today.getTime() - stoppedSmokingDateTime.getTime();
+    console.log("test today", today);
+    console.log("test datetime", datetime);
+    const timeDifference = today - datetime;
     const secondsSince = Math.ceil(timeDifference / 1000);
     return secondsSince;
 }

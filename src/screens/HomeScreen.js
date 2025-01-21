@@ -10,20 +10,25 @@ const HomeScreen = () => {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getUserData();
-      setUserData(data);
-      if (data && data.stoppedSmokingDate) {
+    getUserData().then(data => {
+      console.log("data", data);
+      setUserData(data); // Set user data
+    });
+  }, []);
+
+  useEffect(() => {
+      if (userData && userData.stoppedSmokingDateTime) {
         // Calculate initial seconds since stopped smoking
-        const initialSeconds = calculateSecondsSince(data.stoppedSmokingDate);
+        const initialSeconds = calculateSecondsSince(userData.stoppedSmokingDateTime);
         setElapsedSeconds(initialSeconds);
+        console.log("true")
+
         setShowData(true);
       } else {
+        console.log("false")
         setShowData(false);
       }
-    };
-
-    fetchData();
+    
 
     // Set up interval to update elapsed seconds every second
     const interval = setInterval(() => {
@@ -32,7 +37,7 @@ const HomeScreen = () => {
 
     // Clean up the interval on component unmount
     return () => clearInterval(interval);
-  }, []);
+  }, [userData]);
 
   return (
     <SafeAreaView style={globalStyles.mainContainer}>
@@ -42,8 +47,7 @@ const HomeScreen = () => {
           <Text>{userData.cigarettesSmoked} cigarettes smoked</Text>
           <Text>{userData.pricePerPack}€ per pack</Text>
           <Text>{userData.cigarettesPerPack} cigarettes per pack</Text>
-          <Text>{userData.stoppedSmokingDate} stopped smoking</Text>
-          <Text>{userData.stoppedSmokingTime} stopped smoking</Text>
+          <Text>{userData.stoppedSmokingDateTime} stopped smoking</Text>
         </View>
       ) : (
         <Text>No user data found</Text>

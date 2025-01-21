@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: '#FFC0CB', // Light pink color
+    backgroundColor: '#FFC0CB', // Light pink color #FFE5EF FFC0CB
     flex: 1,
   },
   container: {

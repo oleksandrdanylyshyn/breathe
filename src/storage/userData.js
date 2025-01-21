@@ -20,3 +20,10 @@ export const getUserData = async () => {
   }
 };
 
+export const clearUserData = async () => {
+  try {
+    await AsyncStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.error('Error clearing user data:', error);
+  }
+};

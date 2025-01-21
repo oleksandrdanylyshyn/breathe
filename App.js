@@ -10,26 +10,32 @@ import StartScreen from './src/screens/StartScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [userData, setUserData] = useState(null);
   const [showStartScreen, setShowStartScreen] = useState(true);
 
+  const handleStartScreenSubmit = () => {
+    setShowStartScreen(false);
+  };
+
   useEffect(() => {
-    const userData = getUserData();
-    setUserData(userData);
-    console.log(userData);
-    if (userData && userData.isActive) {
-      setShowStartScreen(false);
-    } else {
-      setShowStartScreen(true);
-    }
+    //clearUserData();
+    getUserData().then(data => {
+      if (data && data.isActive) {
+        setShowStartScreen(false);
+      } else {
+        setShowStartScreen(true);
+      }
+    });
   }, []);
 
 
   return (
+
     <NavigationContainer>
         <Stack.Navigator>
-          {showStartScreen ? (
-            <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false }} />
+        {showStartScreen ? (
+            <Stack.Screen name="Start" options={{ headerShown: false }}>
+              {props => <StartScreen {...props} onSubmit={handleStartScreenSubmit} />}
+            </Stack.Screen>
           ) : (
             <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
           )}
