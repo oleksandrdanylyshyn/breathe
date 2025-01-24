@@ -8,6 +8,32 @@ export const calculateSecondsSince = (datetime) => {
     console.log(secondsSince)
     return secondsSince;
 }
+export const formatDuration = (totalSeconds) => {
+    const secondsInMinute = 60;
+    const secondsInHour = 60 * secondsInMinute;
+    const secondsInDay = 24 * secondsInHour;
+    const secondsInMonth = 30 * secondsInDay; // Approximate month length
+    const secondsInYear = 365 * secondsInDay; // Approximate year length
+
+    const years = Math.floor(totalSeconds / secondsInYear);
+    totalSeconds %= secondsInYear;
+
+    const months = Math.floor(totalSeconds / secondsInMonth);
+    totalSeconds %= secondsInMonth;
+
+    const days = Math.floor(totalSeconds / secondsInDay);
+    totalSeconds %= secondsInDay;
+
+    const hours = Math.floor(totalSeconds / secondsInHour);
+    totalSeconds %= secondsInHour;
+
+    const minutes = Math.floor(totalSeconds / secondsInMinute);
+    totalSeconds %= secondsInMinute;
+
+    const seconds = totalSeconds;
+
+    return { years, months, days, hours, minutes, seconds };
+};
 
 export const combineDateAndTime = (date, time) => {
     // Extract the date components
