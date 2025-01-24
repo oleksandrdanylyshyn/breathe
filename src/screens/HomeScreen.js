@@ -21,11 +21,8 @@ const HomeScreen = () => {
         // Calculate initial seconds since stopped smoking
         const initialSeconds = calculateSecondsSince(userData.stoppedSmokingDateTime);
         setElapsedSeconds(initialSeconds);
-        console.log("true")
-
         setShowData(true);
       } else {
-        console.log("false")
         setShowData(false);
       }
     
@@ -43,7 +40,6 @@ const HomeScreen = () => {
     <SafeAreaView style={globalStyles.mainContainer}>
       {showData ? (
         <View style={globalStyles.container}>
-          <Text>{userData.date}</Text>
           <Text>{userData.cigarettesSmoked} cigarettes smoked</Text>
           <Text>{userData.pricePerPack}€ per pack</Text>
           <Text>{userData.cigarettesPerPack} cigarettes per pack</Text>
@@ -55,7 +51,7 @@ const HomeScreen = () => {
       { showData ? (
         <View style={globalStyles.container}>
           <Text>Non smoker since</Text>
-          <Text>{calculateSecondsSince(userData.stoppedSmokingDate)} seconds</Text>
+          <Text>{elapsedSeconds} seconds</Text>
         </View>
       ) : (
         <Text>No user data found</Text>

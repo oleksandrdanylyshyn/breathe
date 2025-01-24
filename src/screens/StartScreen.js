@@ -6,10 +6,12 @@ import { saveUserData, getUserData } from '../storage/userData';
 import { combineDateAndTime } from '../utils/dateCalcs';
 import { globalStyles } from '../styles/globalStyles';
 
-const StartScreen = (props) => {
-  const [cigarettesSmoked, setCigarettesSmoked] = useState('');
-  const [pricePerPack, setPricePerPack] = useState('');
-  const [cigarettesPerPack, setCigarettesPerPack] = useState('');
+
+const StartScreen = ( props ) => {
+  // added some values here so I don't need to always insert them
+  const [cigarettesSmoked, setCigarettesSmoked] = useState(15);
+  const [pricePerPack, setPricePerPack] = useState(5);
+  const [cigarettesPerPack, setCigarettesPerPack] = useState(20);
 
 const [tempDate, setTempDate] = useState(new Date());
 const [tempTime, setTempTime] = useState(new Date());
@@ -55,6 +57,9 @@ const [tempTime, setTempTime] = useState(new Date());
     });
   }, []);
 
+
+
+
   return (
     <SafeAreaView style={globalStyles.mainContainer}>
         <View style={styles.logoContainer}>
@@ -83,7 +88,7 @@ const [tempTime, setTempTime] = useState(new Date());
         value={cigarettesPerPack}
         onChangeText={setCigarettesPerPack}
       />
-      <Text style={styles.dateTimePickerTitle}>When did you stop smoking?</Text>
+      <Text style={styles.dateTimePickerTitle}>When did you stop?</Text>
       <View style={styles.dateTimePickerContainer}>
         <DateTimePicker
           value={tempDate}
@@ -111,7 +116,7 @@ const [tempTime, setTempTime] = useState(new Date());
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: '-10%',
+    marginTop: '0%',
     padding: "2%",
 
   },
@@ -129,16 +134,16 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#D81B60',
     borderRadius: 20,
     width: '70%',
-    padding: 10,
+    padding: 11,
     alignSelf: 'center',
   },
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
   },
   logo: {
     width: 300,
@@ -148,7 +153,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 15,
+    marginBottom: 25,
     paddingLeft: 15,
     borderRadius: 20,
     width: '70%',
@@ -157,7 +162,7 @@ const styles = StyleSheet.create({
   dateTimePickerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   dateTimePickerTitle: {
     textAlign: 'center',

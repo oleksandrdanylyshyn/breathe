@@ -17,7 +17,6 @@ export default function App() {
   };
 
   useEffect(() => {
-    //clearUserData();
     getUserData().then(data => {
       if (data && data.isActive) {
         setShowStartScreen(false);
@@ -28,11 +27,11 @@ export default function App() {
   }, []);
 
 
+  // TODO: CHeck this in the future - when I already have data save it appears to briefly show the startscreen.
   return (
-
     <NavigationContainer>
         <Stack.Navigator>
-        {showStartScreen ? (
+          {showStartScreen ? (
             <Stack.Screen name="Start" options={{ headerShown: false }}>
               {props => <StartScreen {...props} onSubmit={handleStartScreenSubmit} />}
             </Stack.Screen>

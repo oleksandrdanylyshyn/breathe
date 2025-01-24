@@ -1,9 +1,11 @@
 export const calculateSecondsSince = (datetime) => {
     const today = new Date();
+    const parsedDate = new Date(datetime)
     console.log("test today", today);
-    console.log("test datetime", datetime);
-    const timeDifference = today - datetime;
+    console.log("test datetime", parsedDate);
+    const timeDifference = today - parsedDate;
     const secondsSince = Math.ceil(timeDifference / 1000);
+    console.log(secondsSince)
     return secondsSince;
 }
 
