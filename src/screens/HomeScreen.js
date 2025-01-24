@@ -3,11 +3,13 @@ import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
 import { getUserData } from '../storage/userData';
 import { globalStyles } from '../styles/globalStyles';
 import { calculateSecondsSince, formatDuration } from '../utils/dateCalcs';
+import { moneySavedSinceEnd } from '../utils/moneyCalcs';
 
 const HomeScreen = () => {
   const [userData, setUserData] = useState(null);
   const [showData, setShowData] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [moneySaved, setMoneySaved] = useState(0);
 
   useEffect(() => {
     getUserData().then(data => {
@@ -20,20 +22,39 @@ const HomeScreen = () => {
       if (userData && userData.stoppedSmokingDateTime) {
         // Calculate initial seconds since stopped smoking
         const initialSeconds = calculateSecondsSince(userData.stoppedSmokingDateTime);
+        // Calculate money saved since stopped smoking
+        const initialMoneySaved = moneySavedSinceEnd(
+          initialSeconds, 
+          userData.cigarettesSmoked, 
+          userData.cigarettesPerPack, 
+          userData.pricePerPack
+        );
+
+        setMoneySaved(initialMoneySaved);
         setElapsedSeconds(initialSeconds);
         setShowData(true);
-      } else {
-        setShowData(false);
-      }
-    
 
-    // Set up interval to update elapsed seconds every second
-    const interval = setInterval(() => {
-      setElapsedSeconds(prev => prev + 1);
-    }, 1000);
+        const savingsPerMinute = moneySavedSinceEnd(60, 
+          userData.cigarettesSmoked, 
+          userData.cigarettesPerPack, 
+          userData.pricePerPack
+        )
 
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
+        // Set up interval to update saved money every minute
+        const intervalMoney = setInterval(() => {
+          setMoneySaved(prev => prev + savingsPerMinute)
+        }, 60000)
+
+        // Set up interval to update elapsed seconds every second
+        const intervalTime = setInterval(() => {
+          setElapsedSeconds(prev => prev + 1);
+        }, 1000);
+
+        return () => {
+          clearInterval(intervalTime);
+          clearInterval(intervalMoney);
+        }
+      } 
   }, [userData]);
 
   const { years, months, days, hours, minutes, seconds } = formatDuration(elapsedSeconds);
@@ -68,33 +89,22 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={globalStyles.mainContainer}>
-      {showData ? (
-        <View style={globalStyles.container}>
-          <Text>{userData.cigarettesSmoked} cigarettes smoked</Text>
-          <Text>{userData.pricePerPack}€ per pack</Text>
-          <Text>{userData.cigarettesPerPack} cigarettes per pack</Text>
-          <Text>{userData.stoppedSmokingDateTime} stopped smoking</Text>
-        </View>
-      ) : (
-        <Text>No user data found</Text>
-      )}
       { showData ? (
         <View style={globalStyles.container}>
-        <Text style={styles.durationTitle}>FREE SINCE</Text>
-        {/*// TODO: Make a way to only show 4 blocks - the 4 higuer that have values. 
-        // If non smoker for less than 1 month - day hour minute second
-        // If non smoker for over 1 month - month day hour minute
-        // If non smoker for over 1 year - year month day hour*/}
-        
-      <View style={styles.containerDuration}>
-        {boxes.map((box, index) => (
-          <View key={index} style={styles.boxDuration}>
-            <Text style={styles.boxValue}>{box.value}</Text>
-            <Text style={styles.boxUnit}>{box.unit}</Text>
+          <View style={styles.containerMoney}>
+            <Text style={styles.moneySavedText}>Money saved</Text>
+            <Text style={styles.unitText}>{moneySaved.toFixed(2)} €</Text>
           </View>
-        ))}
-      </View>
-      </View>
+          <Text style={styles.durationTitle}>FREE SINCE</Text>
+          <View style={styles.containerDuration}>
+            {boxes.map((box, index) => (
+              <View key={index} style={styles.boxDuration}>
+                <Text style={styles.boxValue}>{box.value}</Text>
+                <Text style={styles.boxUnit}>{box.unit}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
       ) : (
         <Text>No user data found</Text>
       )}
@@ -125,11 +135,25 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   durationTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: "gray",
     alignSelf: "center"
-  }
+  },
+  containerMoney: {
+    flexDirection: "column",
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  unitText: {
+    fontSize: 50,
+    fontWeight: "bold",
+    color: "#fff"
+  },
+  moneySavedText: {
+    fontSize: 16,
+    color: "gray",
+  } 
 });
 
 export default HomeScreen;
