@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { getUserData } from '../storage/userData';
 import { globalStyles } from '../styles/globalStyles';
 import { calculateSecondsSince, formatDuration } from '../utils/dateCalcs';
 import { moneySavedSinceEnd } from '../utils/moneyCalcs';
 
-const HomeScreen = () => {
+
+const HomeScreen = ( { navigation } ) => {
   const [userData, setUserData] = useState(null);
   const [showData, setShowData] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -108,6 +109,9 @@ const HomeScreen = () => {
       ) : (
         <Text>No user data found</Text>
       )}
+    <TouchableOpacity onPress={() => navigation.navigate('Achievements')}>
+      <Text>go to achievements</Text>
+    </TouchableOpacity>
     </SafeAreaView>
   );
 };
